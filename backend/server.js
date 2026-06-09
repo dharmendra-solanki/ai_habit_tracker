@@ -11,35 +11,42 @@ import aiRoutes from './routes/ai.js'
 const app = express();
 
 
-const allowedOrigins = (process.env.CLIENT_URL || "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean);
+// const allowedOrigins = (process.env.CLIENT_URL || "")
+//     .split(",")
+//     .map((s) => s.trim())
+//     .filter(Boolean);
 
 
-const corsOptions = {
-    origin(origin, cb){
-        // Allow requests with no origin (curl , same origin , servers-to-servers)
-        if(!origin) return cb(null, true);
-        // Allow any localhost 127.0.0.1 origin in development
-        if(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)){
-            return cb(null, true);
-        }
-        // Allow anything explicitly listed in CLIENT_URL
-        if(allowedOrigins.includes(origin)){
-            return cb(null, true);
-        }
-        // Otherwise , reject
-        cb(new Error("Not allowed by CORS"));
-    },
+// const corsOptions = {
+//     origin(origin, cb){
+//         // Allow requests with no origin (curl , same origin , servers-to-servers)
+//         if(!origin) return cb(null, true);
+//         // Allow any localhost 127.0.0.1 origin in development
+//         if(/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(origin)){
+//             return cb(null, true);
+//         }
+//         // Allow anything explicitly listed in CLIENT_URL
+//         if(allowedOrigins.includes(origin)){
+//             return cb(null, true);
+//         }
+//         // Otherwise , reject
+//         cb(new Error("Not allowed by CORS"));
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+// };
+
+// app.use(cors(corsOptions));
+// app.options("*", cors(corsOptions));
+app.use(
+  cors({
+    origin: true,
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-};
+  })
+);
 
-app.use(cors(corsOptions));
-app.options("*", cors(corsOptions));
-app.use(express.json({limit: "1mb"}));
+app.use(express.json({ limit: "1mb" }));
 
 app.get("/", (req, res) => {
     res.json({
